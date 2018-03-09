@@ -1,0 +1,161 @@
+ 09:02:37
+	内部外部表区别：
+
+如果数据在hdfs上，在进行数据导入的时候执行的是一个移动的过程；如果是内部表，一旦删除元数据和数据都被删除；
+                                                               如果是外部表，一旦删除元数据被删除，数据还会保留；
+
+
+如果数据在本地上，在进行数据导入的时候执行的是一个复制的过程； 如果是内部表，一旦删除元数据和数据都被删除；
+                                                               如果是外部表，一旦删除元数据被删除，数据还会保留；
+
+
+
+hive使用：
+
+1，直接敲hive回车
+2，选择自己的库，use opdn1_zwkj2;
+3,写自己的逻辑 select等等
+
+
+建表语句：
+
+
+外部表创建多一个external
+下面是以流量上网日志原始数据表为样例：
+
+create external table IF NOT EXISTS  dwa_d_misidn_stay(
+device_number string,
+imsi string,
+start_time string,
+end_time string,
+hour string,
+endhour string,
+current_lac string,
+current_ci string,
+current_lat double,
+current_lng double,
+grid string,
+enodebid string,
+ci string,
+area string,
+dura bigint,
+distance double,
+speed double,
+sequence string,
+current_dura bigint,
+roamtype string,
+province string,
+hrov_id string,
+harea_id string,
+district_id string,
+month_id string,
+day_id string,
+prov_id string)row format delimited fields terminated by '|' stored as textfile;
+
+
+
+create external table IF NOT EXISTS  gas_lng_lat(
+WGS84_point_lat string,
+WGS84_point_lng string)row format delimited fields terminated by '\t' stored as textfile;
+
+drop table deal_lng_lat;
+create external table IF NOT EXISTS  deal_lng_lat(
+WGS84_point_lat string,
+WGS84_point_lng string,
+address string,
+brand string,
+code string)row format delimited fields terminated by '\t' stored as textfile;
+
+create external table IF NOT EXISTS  subway_lng_lat(
+address string,
+WGS84_point_lat string,
+WGS84_point_lng string
+)row format delimited fields terminated by '\t' stored as textfile;
+
+
+Load data local inpath '/home/opdn1_zwkj2/CUSC_DDH/deal_lng_lat.txt'   into table deal_lng_lat;
+Load data local inpath '/home/opdn1_zwkj2/CUSC_DDH/subway_lng_lat.txt'   into table subway_lng_lat;
+Load data local inpath '/home/opdn1_zwkj2/CUSC_DDH/gas_lng_lat.txt'   into table gas_lng_lat;
+
+
+select WGS84_point_lat, deal_lng_lat
+
+
+数据导入方式（路径自己定义）：
+从本地导入
+Load data local inpath '/home/opdn1_zwkj2/data/DUAPART_20171023_031_SE.txt'   into table DWD_D_IA_UA_PART;
+从hdfs导入
+Load data  inpath '/files/prov/opdn1_zwkj2/DUAPART_20171023_031_SE.txt'  into table DWD_D_IA_UA_PART;
+(overright)
+
+
+
+Load data  inpath '/files/prov/opdn1_zwkj2/CPHQ-20171219-180234_DWA_V_M_CUS_2G_RNS_WIDE_01_0000001.031'  into table DWA_V_M_CUS_2G_RNS_WIDE;
+Load data  inpath '/files/prov/opdn1_zwkj2/CPHQ-20171219-180234_DWA_V_M_CUS_3G_RNS_WIDE_01_0000001.031'  into table DWA_V_M_CUS_3G_RNS_WIDE;
+Load data  inpath '/files/prov/opdn1_zwkj2/CPHQ-20171219-180234_DWA_V_M_CUS_CB_RNS_WIDE_01_0000001.031'  into table DWA_V_M_CUS_CB_RNS_010;
+Load data  inpath '/files/prov/opdn1_zwkj2/CPHQ-20171219-180234_DWA_V_M_CUS_NM_CHARGE_031_01_0000001.031'  into table DWA_V_M_CUS_NM_CHARGE_010;
+Load data  inpath '/files/prov/opdn1_zwkj2/CPHQ-20171219-180234_dm_d_ia_bb_365_time_label_01~30_0000001.031'  into table DM_D_IA_BB_365_TIME_LABEL;
+Load data  inpath '/files/prov/opdn1_zwkj2/CPHQ-20171219-180234_dm_d_ia_bb_365_url_label_01~30_0000001.031'  into table DM_D_IA_BB_365_URL_LABEL;
+Load data  inpath '/files/prov/opdn1_zwkj2/CPHQ-20171219-180234_dwa_d_ia_basic_label_01~30_0000001.031'  into table DWA_D_IA_BASIC_LABEL;
+Load data  inpath '/files/prov/opdn1_zwkj2/CPHQ-20171219-180234_dwa_d_ia_basic_user_app_01~30_0000001.031'  into table DWA_D_IA_BASIC_USER_APP;
+Load data  inpath '/files/prov/opdn1_zwkj2/CPHQ-20171219-180234_dwa_d_ia_basic_user_app_hour_01~30_0000001.031'  into table DWA_D_IA_BASIC_USER_APP_HOUR;
+Load data  inpath '/files/prov/opdn1_zwkj2/CPHQ-20171219-180234_dwa_d_ia_basic_user_web_01~30_0000001.031'  into table DWA_D_IA_BASIC_USER_WEB;
+Load data  inpath '/files/prov/opdn1_zwkj2/CPHQ-20171219-180234_dwa_m_ia_basic_label_01_0000001.031'  into table DWA_M_IA_BASIC_LABEL;
+Load data  inpath '/files/prov/opdn1_zwkj2/CPHQ-20171219-180234_dwa_m_ia_basic_user_app_01_0000001.031'  into table DWA_M_IA_BASIC_USER_APP;
+Load data  inpath '/files/prov/opdn1_zwkj2/CPHQ-20171219-180234_dwa_m_ia_basic_user_web_01_0000001.031'  into table DWA_M_IA_BASIC_USER_WEB;
+Load data  inpath '/files/prov/opdn1_zwkj2/DSTAY_20171210_031_SE.txt'  into table dwa_d_misidn_stay;
+
+
+
+ALTER TABLE DWA_V_M_CUS_CB_RNS_011 RENAME TO DWA_V_M_CUS_CB_RNS_010
+
+
+hdfs dfs -ls /files/prov/opdn1_zwkj2/
+
+
+
+
+
+DWEB_20170901_031_SE
+
+#APP日表 051 29号
+#地段汇总表 051 8号
+#用户访问网站日表 051 14号
+
+
+
+中间表存储所有访问汽车之家用户信息temp_autohome_iu
+
+Load data  inpath '/files/prov/opdn1_zwkj2/DAPP_20170930_051_SE.txt'  into table DWA_D_IA_BASIC_USER_APP;
+
+
+
+Load data  inpath '/files/prov/opdn1_zwkj2/LABEL_201709_031_SE.txt'  into table DWA_M_IA_BASIC_LABEL;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+hadoop fs -du -h /user/opdn1_zwkj2  
+hadoop fs -du -h /user/opdn1_zwkj2/opdn1_zwkj2.db
+查看大小
+
+
+
+
+
+----后台执行
+nohup hive -f deal_visit_dika.hql >>deal.log 2>&1 &
+----查看日志
+tail -f deal.log
+----中断
+ps -ef|grep 脚本名字
