@@ -1,0 +1,26 @@
+--- 数据导出
+hive -e "insert overwrite local directory '/home/hadoop/test' 
+row format delimited
+fields terminated by '\t'
+select * from test;"
+
+hive -e "insert overwrite directory '/user/hive/' 
+row format delimited
+fields terminated by '\t'
+select * from test;"
+
+hive -e "insert overwrite local directory '/home/1707501/tmp/20180606' row format delimited fields terminated by ',' SELECT * FROM rnd_pt.vcrm10_rt_log_launch_20180520_20180606;"
+
+
+
+
+
+
+
+
+
+
+
+
+
+
